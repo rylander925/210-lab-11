@@ -55,7 +55,7 @@ void CoutLine(int length = 50, char lineChar = '=');
  * @todo Add file input
  */
 int main() {
-    const int SIZE = 2;
+    const int SIZE = 3;
     const string FILENAME = "data.txt";
     Playlist* playlistlist = nullptr;
     playlistlist = new Playlist[SIZE];
@@ -97,7 +97,7 @@ void Playlist::Fill(istream* input) {
         cout << " > Enter name of song " << i + 1 << ": " << endl;
         getline(*input, (songs + i)->name);
         cout << " >> Enter artist name: " << endl;
-        getline(*input, (songs + i)->name);
+        getline(*input, (songs + i)->artist);
         while((songs + i)->duration <= 0) { //dont allow durations of 0; duration is 0 by default
             cout << " >> Enter duration of song " << i + 1 << " in seconds: " << endl;
             while(!(*input >> (songs + i)->duration)) { 
@@ -197,7 +197,9 @@ void fillPlaylistlist(Playlist* playlistlist, int size, string filename) {
  * @todo Test: make sure all associated playlist/song display functions work properly
  */
 void displayPlaylistlist(Playlist* playlistlist, int size) {
-    cout << "Display Playlists" << endl;
+    CoutLine();
+    cout << "Displaying Playlists" << endl;
+    CoutLine();
     //Calls Display function on each playlist
     //Each playlist will call a song Display function for its songs
     for(int i = 0; i < size; i++) {
