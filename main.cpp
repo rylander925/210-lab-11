@@ -37,7 +37,7 @@ struct Playlist {
     }
 };
 
-void fillPlaylistlist(Playlist* playlistlist, int size, string filename);
+void fillPlaylistlist(Playlist* playlistlist, int size, string filename = "");
 
 void displayPlaylistlist(Playlist* playlistlist, int size);
 
@@ -48,7 +48,18 @@ void displayPlaylistlist(Playlist* playlistlist, int size);
  */
 void CoutLine(int length = 50, char lineChar = '=');
 
+/**
+ * @todo Move descriptions to prototypes
+ * @todo Test!
+ * @todo Add file input
+ */
 int main() {
+    const int SIZE = 2;
+    Playlist* playlistlist = nullptr;
+    playlistlist = new Playlist[SIZE];
+    fillPlaylistlist(playlistlist, SIZE);
+    displayPlaylistlist(playlistlist, SIZE);
+    delete [] playlistlist;
 }
 
 /**
@@ -71,7 +82,9 @@ void Playlist::Fill(istream* input) {
             input->clear();
             input->ignore(IGNORE_CHARS, '\n');
         }
-        cout << "Size must be non-negative" << endl;
+        if (size < 0) {
+            cout << "Size must be non-negative" << endl;
+        }
     }
     input->ignore(IGNORE_CHARS, '\n'); //ignore after using >>
 
@@ -79,19 +92,21 @@ void Playlist::Fill(istream* input) {
     songs = new Song[size];
     cout << "Entering songs: " << endl;
     for (int i = 0; i < size; i++) {
-        cout << " > Enter song name: " << endl;
+        cout << " > Enter name of song " << i + 1 << ": " << endl;
         getline(*input, (songs + i)->name);
         while((songs + i)->duration <= 0) { //dont allow durations of 0; duration is 0 by default
-            cout << " > Enter song duration in seconds: " << endl;
+            cout << " > Enter duration of song " << i + 1 << " in seconds: " << endl;
             while(!(*input >> (songs + i)->duration)) { 
                 cout << "Duration must be an integer" << endl;
                 input->clear();
                 input->ignore(IGNORE_CHARS, '\n');
             }
-            cout << "Duration must be positive" << endl;
+            if ((songs + i)->duration <= 0) {
+                cout << "Duration must be positive" << endl;
+            }
         }
+        input->ignore(IGNORE_CHARS, '\n');
     }
-    input->ignore(IGNORE_CHARS, '\n');
 } 
 
 void CoutLine(int length, char lineChar) {
@@ -131,7 +146,7 @@ string Song::GetFormattedDuration() {
  * @todo add formatting to make it look nicer
  */
 void Song::Display() {
-    cout << "\"" << name << "\": " << GetFormattedDuration();
+    cout << "\"" << name << "\": " << GetFormattedDuration() << endl;;
 }
 
 
