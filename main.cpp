@@ -4,8 +4,9 @@ IDE Used: Visual Studio Code
 */
 
 #include<iostream>
-#include <string>
+#include<string>
 #include<fstream>
+#include<iomanip>
 
 using namespace std;
 
@@ -14,6 +15,8 @@ const int IGNORE_CHARS = 100;
 struct Song {
     string name;
     int duration; //in seconds
+    void Display();
+    string GetFormattedDuration();
     Song(): name(""), duration(0) { };
 };
 
@@ -90,13 +93,31 @@ void Playlist::Fill(istream* input) {
     input->ignore(IGNORE_CHARS, '\n');
 } 
 
-void CoutLine(int length) {
-
+void CoutLine(int length, char lineChar) {
+    char prevFillChar = cout.fill();
+    cout << setw(length) << setfill(lineChar) << "" << setfill(prevFillChar) << endl;
 }
 
+/**
+ * Output playlist information to console
+ * @todo add display function for individual songs, test
+ */
 void Playlist::Display() {
-    cout << ""
+    CoutLine();
+    cout << "Name: " << name << endl;
+    cout << "Genre: " << genre << endl;
+    cout << "Songs: " << size << endl;
+    for (int i = 0; i < size; i++) {
+        (songs + i)->Display();
+    }
+    CoutLine();
+}
 
+/**
+ * Output song information to console
+ */
+void Song::Display() {
+    cout << "\"" << name << "\": ";
 }
 
 void fillPlaylistlist(Playlist* playlistlist, int size, string filename) {
