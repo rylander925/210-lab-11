@@ -9,9 +9,12 @@ IDE Used: Visual Studio Code
 
 using namespace std;
 
+const int IGNORE_CHARS = 100;
+
 struct Song {
     string name;
     int duration; //in seconds
+    Song(): name(""), duration(0) { };
     Song(string name, int duration): name(name), duration(duration) { }
 };
 
@@ -43,16 +46,34 @@ void Playlist::Fill(istream* input) {
     getline(*input, name);
     cout << "Enter genre: " << endl;
     getline(*input, genre);
-    cout << "Enter playlist size: " << endl;
     while(size < 0) { //allow empty playlists, size is -1 by default
+        cout << "Enter playlist size: " << endl;
         while(!(*input >> size)) { 
             cout << "Size must be an integer" << endl;
             input->clear();
-            input->ignore(100, '\n');
+            input->ignore(IGNORE_CHARS, '\n');
         }
         cout << "Size must be non-negative" << endl;
     }
-    
+    input->ignore(IGNORE_CHARS, '\n'); //ignore after using >>
+
+    songs = new Song[size];
+    cout << "Entering songs: " << endl;
+    for (int i = 0; i < size; i++) {
+        cout << " > Enter song name: " << endl;
+        getline(*input, name);
+        while(size <= 0) { //dont allow durations of 0; duration is 0 by default
+            cout << " > Enter song duration in seconds: " << endl;
+            while(!(*input >> size)) { 
+                cout << "Duration must be an integer" << endl;
+                input->clear();
+                input->ignore(IGNORE_CHARS, '\n');
+            }
+            cout << "Duration must be positive" << endl;
+        }
+        
+    }
+
     
 
 } 
