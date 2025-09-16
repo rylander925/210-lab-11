@@ -15,10 +15,11 @@ const int IGNORE_CHARS = 100;
 
 struct Song {
     string name;
+    string artist;
     int duration; //in seconds
     void Display();
     string GetFormattedDuration();
-    Song(): name(""), duration(0) { };
+    Song(): name(""), duration(0), artist("") { };
 };
 
 struct Playlist {
@@ -54,10 +55,11 @@ void CoutLine(int length = 50, char lineChar = '=');
  * @todo Add file input
  */
 int main() {
-    const int SIZE = 1;
+    const int SIZE = 2;
+    const string FILENAME = "data.txt";
     Playlist* playlistlist = nullptr;
     playlistlist = new Playlist[SIZE];
-    fillPlaylistlist(playlistlist, SIZE);
+    fillPlaylistlist(playlistlist, SIZE, FILENAME);
     displayPlaylistlist(playlistlist, SIZE);
     delete [] playlistlist;
 }
@@ -94,15 +96,17 @@ void Playlist::Fill(istream* input) {
     for (int i = 0; i < size; i++) {
         cout << " > Enter name of song " << i + 1 << ": " << endl;
         getline(*input, (songs + i)->name);
+        cout << " >> Enter artist name: " << endl;
+        getline(*input, (songs + i)->name);
         while((songs + i)->duration <= 0) { //dont allow durations of 0; duration is 0 by default
-            cout << " > Enter duration of song " << i + 1 << " in seconds: " << endl;
+            cout << " >> Enter duration of song " << i + 1 << " in seconds: " << endl;
             while(!(*input >> (songs + i)->duration)) { 
-                cout << "Duration must be an integer" << endl;
+                cout << " >>> Duration must be an integer" << endl;
                 input->clear();
                 input->ignore(IGNORE_CHARS, '\n');
             }
             if ((songs + i)->duration <= 0) {
-                cout << "Duration must be positive" << endl;
+                cout << " >>> Duration must be positive" << endl;
             }
         }
         input->ignore(IGNORE_CHARS, '\n');
@@ -150,7 +154,7 @@ string Song::GetFormattedDuration() {
  * @todo add formatting to make it look nicer
  */
 void Song::Display() {
-    cout << "\"" << name << "\": " << GetFormattedDuration() << endl;;
+    cout << "\"" << name << "\" by " << artist << ": " << GetFormattedDuration() << endl;;
 }
 
 
@@ -164,13 +168,25 @@ void Song::Display() {
  */
 void fillPlaylistlist(Playlist* playlistlist, int size, string filename) {
     istream* input;
-    //TODO: Add file input
-    input = &cin;
+    ifstream infile;
+    if (filename != "") {
+        infile.open(filename);
+        if (!infile.good()) {
+            cout << "ERROR: Failed to open file \"" << filename << "\"" << endl;
+            throw ios_base::failure("Invalid file name");
+        }
+        input = &infile;
+    } else {
+        input = &cin;
+    }
     cout << "Filling playlist list" << endl;
     for(int i = 0; i < size; i++) {
         cout << "Playlist #" << i + 1 << ":" << endl;
         (playlistlist + i)->Fill(input);
         
+    }
+    if(infile.is_open()) {
+        infile.close();
     }
 }
 
