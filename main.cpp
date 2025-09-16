@@ -54,7 +54,7 @@ void CoutLine(int length = 50, char lineChar = '=');
  * @todo Add file input
  */
 int main() {
-    const int SIZE = 2;
+    const int SIZE = 1;
     Playlist* playlistlist = nullptr;
     playlistlist = new Playlist[SIZE];
     fillPlaylistlist(playlistlist, SIZE);
@@ -130,14 +130,18 @@ void Playlist::Display() {
 }
 
 /**
- * Format song duration in hr:min:seconds format
+ * Format song duration as HRhr MINmin SECsec
  * @todo test!
  */
 string Song::GetFormattedDuration() {
     stringstream formatted;
-    formatted << duration / 3600 << ":"; //hours
-    formatted << (duration % 3600) / 60 << ":"; //minutes
-    formatted << (duration % 3600) % 60; //seconds
+    if (duration >= 3600) {
+        formatted << duration / 3600 << "hr "; //hours
+    }
+    if (duration >= 60) {
+        formatted << (duration % 3600) / 60 << "min "; //minutes
+    }
+    formatted << (duration % 3600) % 60 <<"s "; //seconds
     return formatted.str();
 }
 
