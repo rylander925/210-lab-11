@@ -7,6 +7,7 @@ IDE Used: Visual Studio Code
 #include<string>
 #include<fstream>
 #include<iomanip>
+#include<sstream>
 
 using namespace std;
 
@@ -114,12 +115,34 @@ void Playlist::Display() {
 }
 
 /**
- * Output song information to console
+ * Format song duration in hr:min:seconds format
+ * @todo test!
  */
-void Song::Display() {
-    cout << "\"" << name << "\": ";
+string Song::GetFormattedDuration() {
+    stringstream formatted;
+    formatted << duration / 3600 << ":"; //hours
+    formatted << (duration % 3600) / 60 << ":"; //minutes
+    formatted << (duration % 3600) % 60; //seconds
+    return formatted.str();
 }
 
+/**
+ * Output song information to console
+ * @todo add formatting to make it look nicer
+ */
+void Song::Display() {
+    cout << "\"" << name << "\": " << GetFormattedDuration();
+}
+
+
+/**
+ * Fill list of playlists from console or file input
+ * @param playlistlist Dynamic array of playlists to fill
+ * @param size Size of playlist array
+ * @param filename If specified, name of file to retrieve file input from
+ * @todo Test!!
+ * @todo Add file input
+ */
 void fillPlaylistlist(Playlist* playlistlist, int size, string filename) {
     istream* input;
     //TODO: Add file input
@@ -132,8 +155,16 @@ void fillPlaylistlist(Playlist* playlistlist, int size, string filename) {
     }
 }
 
+/**
+ * Output a list of playlists to console output
+ * @param playlistlist Dynamic list of playlists to output
+ * @param size Size of array of playlists
+ * @todo Test: make sure all associated playlist/song display functions work properly
+ */
 void displayPlaylistlist(Playlist* playlistlist, int size) {
     cout << "Display Playlists" << endl;
+    //Calls Display function on each playlist
+    //Each playlist will call a song Display function for its songs
     for(int i = 0; i < size; i++) {
         cout << "Playlist #" << i + 1 << ": " << endl;
         (playlistlist + i)->Display();
