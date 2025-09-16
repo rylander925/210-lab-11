@@ -52,7 +52,10 @@ void CoutLine(int length = 50, char lineChar = '=');
 /**
  * @todo Move descriptions to prototypes
  * @todo Test!
- * @todo Add file input
+ * @todo Test invalid file open
+ * @todo add accumulator for playlist duration
+ * @todo format for submission
+ * @todo better text formatting
  */
 int main() {
     const int SIZE = 3;
