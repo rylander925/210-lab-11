@@ -80,15 +80,29 @@ void displayPlaylistlist(Playlist* playlistlist, int size);
 void CoutLine(int length = 60, char lineChar = '=');
 
 int main() {
-    const int SIZE = 3;
+    int size = 0;
     const string FILENAME = "data.txt";
+    const int IGNORE_CHARS = 100;
+
+    //get size of dynamic array from input
+    cout << "Enter number of playlists to add: " << endl;
+    while(size <= 0) {
+        while (!(cin >> size)) {
+            cout << "Number of playlists must be an integer: " << endl;
+            cin.clear();
+            cin.ignore(IGNORE_CHARS, '\n');
+        }
+        if (size <= 0) {
+            cout << "Number of playlists must be positive" << endl;
+        }
+    }
 
     //allocate memory to array of playlists
     Playlist* playlistlist = nullptr;
-    playlistlist = new Playlist[SIZE];
+    playlistlist = new Playlist[size];
 
-    fillPlaylistlist(playlistlist, SIZE);
-    displayPlaylistlist(playlistlist, SIZE);
+    fillPlaylistlist(playlistlist, size);
+    displayPlaylistlist(playlistlist, size);
 
     delete [] playlistlist;
 }
