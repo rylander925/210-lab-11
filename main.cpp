@@ -27,8 +27,9 @@ struct Playlist {
     Song* songs;
     int tableSongWidth;
     int tableDurationWidth;
+    int totalDuration;
 
-    Playlist(): size(-1), name(""), genre(""), songs(nullptr), tableSongWidth(50), tableDurationWidth(10) { }
+    Playlist(): size(-1), name(""), genre(""), songs(nullptr), tableSongWidth(50), tableDurationWidth(10), totalDuration(0) { }
 
     /**
      * Fill a playlist from input
@@ -80,13 +81,11 @@ void displayPlaylistlist(Playlist* playlistlist, int size);
 void CoutLine(int length = 60, char lineChar = '=');
 
 /**
- * @todo Test!
- * @todo add accumulator for playlist duration
  * @todo format for submission
  */
 int main() {
     const int SIZE = 3;
-    const string FILENAME = "data.txtt";
+    const string FILENAME = "data.txt";
 
     //allocate memory to array of playlists
     Playlist* playlistlist = nullptr;
@@ -145,6 +144,9 @@ void Playlist::Fill(istream* input) {
             }
         }
         input->ignore(IGNORE_CHARS, '\n');
+        
+        //save duration of entire playlist
+        totalDuration += (songs + i)->duration;
 
         //save longest duration width so display table formats properly
         int durationWidth = FormatDuration((songs + i)->duration).size();
@@ -163,6 +165,7 @@ void Playlist::Display() {
     cout << "Name: " << name << endl;
     cout << "Genre: " << genre << endl;
     cout << "Songs: " << size << endl;
+    cout << "Duration: " << FormatDuration(totalDuration) << endl;
 
     //Display formatted table of songs
     CoutLine(tableSongWidth + tableDurationWidth);
