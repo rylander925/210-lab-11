@@ -2,6 +2,7 @@
 COMSC-210 | Lab 11 | Rylan Der
 IDE Used: Visual Studio Code
 */
+
 #include<iostream>
 #include<string>
 #include<fstream>
@@ -9,8 +10,6 @@ IDE Used: Visual Studio Code
 #include<sstream>
 
 using namespace std;
-
-const int IGNORE_CHARS = 100;
 
 struct Song {
     string name;
@@ -80,9 +79,6 @@ void displayPlaylistlist(Playlist* playlistlist, int size);
  */
 void CoutLine(int length = 60, char lineChar = '=');
 
-/**
- * @todo format for submission
- */
 int main() {
     const int SIZE = 3;
     const string FILENAME = "data.txt";
@@ -91,13 +87,14 @@ int main() {
     Playlist* playlistlist = nullptr;
     playlistlist = new Playlist[SIZE];
 
-    fillPlaylistlist(playlistlist, SIZE, FILENAME);
+    fillPlaylistlist(playlistlist, SIZE);
     displayPlaylistlist(playlistlist, SIZE);
 
     delete [] playlistlist;
 }
 
 void Playlist::Fill(istream* input) {
+    const static int IGNORE_CHARS = 100;
     //Get playlist details from input
     cout << "Enter name: " << endl;
     getline(*input, name);
