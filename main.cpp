@@ -17,7 +17,6 @@ struct Song {
     string artist;
     int duration; //in seconds
     void Display();
-    string GetFormattedDuration();
     Song(): name(""), duration(0), artist("") { };
 };
 
@@ -36,6 +35,8 @@ struct Playlist {
         songs = nullptr;
     }
 };
+
+string FormatDuration(int seconds);
 
 void fillPlaylistlist(Playlist* playlistlist, int size, string filename = "");
 
@@ -125,12 +126,19 @@ void CoutLine(int length, char lineChar) {
  * @todo add display function for individual songs, test
  */
 void Playlist::Display() {
+    const static int TABLE_SONG_WIDTH = 50;
+    const static int TABLE_DURATION_WIDTH = 10;
     CoutLine();
     cout << "Name: " << name << endl;
     cout << "Genre: " << genre << endl;
     cout << "Songs: " << size << endl;
+    CoutLine();
+    cout << setw(TABLE_SONG_WIDTH) << "\tSong Name and Artist"
+         << setw(TABLE_DURATION_WIDTH) << "Duration";
+    CoutLine(TABLE_SONG_WIDTH + TABLE_DURATION_WIDTH, '-');
     for (int i = 0; i < size; i++) {
-        (songs + i)->Display();
+        cout << setw(TABLE_SONG_WIDTH) << "\t" << (songs + i)->name << " by " << (songs + i)->artist
+             << setw(TABLE_DURATION_WIDTH) << FormatDuration((songs + i)->duration);
     }
     CoutLine();
 }
@@ -139,15 +147,15 @@ void Playlist::Display() {
  * Format song duration as HRhr MINmin SECsec
  * @todo test!
  */
-string Song::GetFormattedDuration() {
+string FormatDuration(int seconds) {
     stringstream formatted;
-    if (duration >= 3600) {
-        formatted << duration / 3600 << "hr "; //hours
+    if (seconds >= 3600) {
+        formatted << seconds / 3600 << "hr "; //hours
     }
-    if (duration >= 60) {
-        formatted << (duration % 3600) / 60 << "min "; //minutes
+    if (seconds >= 60) {
+        formatted << (seconds % 3600) / 60 << "min "; //minutes
     }
-    formatted << (duration % 3600) % 60 <<"s "; //seconds
+    formatted << (seconds % 3600) % 60 <<"s "; //seconds
     return formatted.str();
 }
 
