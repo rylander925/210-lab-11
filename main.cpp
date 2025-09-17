@@ -27,9 +27,20 @@ struct Playlist {
     Song* songs;
     int tableSongWidth;
     int tableDurationWidth;
+
     Playlist(): size(-1), name(""), genre(""), songs(nullptr), tableSongWidth(50), tableDurationWidth(10) { }
+
+    /**
+     * Fill a playlist from input
+     * @param input Pointer to an istream object to take input from
+     */
     void Fill(istream* input);
+
+    /**
+     * Output playlist information to console
+     */
     void Display();
+
     ~Playlist() {
         if (songs) {
             delete [] songs;
@@ -38,10 +49,27 @@ struct Playlist {
     }
 };
 
+/**
+ * Format a given time in seconds as HRhr MINmin SECsec
+ * @param seconds Time to be formatted
+ * @return String text of formatted duration
+ */
 string FormatDuration(int seconds);
 
+/**
+ * Fill list of playlists from console or file input
+ * @param playlistlist Dynamic array of playlists to fill
+ * @param size Size of playlist array
+ * @param filename If specified, name of file to retrieve file input from
+ */
 void fillPlaylistlist(Playlist* playlistlist, int size, string filename = "");
 
+/**
+ * Output a list of playlists to console output
+ * @param playlistlist Dynamic list of playlists to output
+ * @param size Size of array of playlists
+ * @todo Test: make sure all associated playlist/song display functions work properly
+ */
 void displayPlaylistlist(Playlist* playlistlist, int size);
 
 /**
@@ -52,28 +80,24 @@ void displayPlaylistlist(Playlist* playlistlist, int size);
 void CoutLine(int length = 60, char lineChar = '=');
 
 /**
- * @todo Move descriptions to prototypes
  * @todo Test!
- * @todo Test invalid file open
  * @todo add accumulator for playlist duration
  * @todo format for submission
- * @todo better text formatting
  */
 int main() {
     const int SIZE = 3;
     const string FILENAME = "data.txtt";
+
+    //allocate memory to array of playlists
     Playlist* playlistlist = nullptr;
     playlistlist = new Playlist[SIZE];
+
     fillPlaylistlist(playlistlist, SIZE, FILENAME);
     displayPlaylistlist(playlistlist, SIZE);
+
     delete [] playlistlist;
 }
 
-/**
- * Fill a playlist from input
- * @param input Pointer to an istream object to take input from
- * @todo TEST!!
- */
 void Playlist::Fill(istream* input) {
     //Get playlist details from input
     cout << "Enter name: " << endl;
@@ -133,15 +157,14 @@ void CoutLine(int length, char lineChar) {
     cout << setw(length) << setfill(lineChar) << "" << setfill(prevFillChar) << endl;
 }
 
-/**
- * Output playlist information to console
- * @todo add display function for individual songs, test
- */
 void Playlist::Display() {
+    //Display playlist info
     CoutLine(tableSongWidth + tableDurationWidth);
     cout << "Name: " << name << endl;
     cout << "Genre: " << genre << endl;
     cout << "Songs: " << size << endl;
+
+    //Display formatted table of songs
     CoutLine(tableSongWidth + tableDurationWidth);
     cout << setw(tableSongWidth) << left << "Song Name and Artist"
          << setw(tableDurationWidth) << "Duration" << endl;
@@ -153,10 +176,6 @@ void Playlist::Display() {
     CoutLine(tableDurationWidth+tableSongWidth);
 }
 
-/**
- * Format song duration as HRhr MINmin SECsec
- * @todo test!
- */
 string FormatDuration(int seconds) {
     stringstream formatted;
     if (seconds >= 3600) {
@@ -169,19 +188,13 @@ string FormatDuration(int seconds) {
     return formatted.str();
 }
 
-/**
- * Fill list of playlists from console or file input
- * @param playlistlist Dynamic array of playlists to fill
- * @param size Size of playlist array
- * @param filename If specified, name of file to retrieve file input from
- * @todo Test!!
- * @todo Add file input
- */
 void fillPlaylistlist(Playlist* playlistlist, int size, string filename) {
+    //choose between console or file input
     istream* input;
     ifstream infile;
     if (filename != "") {
         infile.open(filename);
+        //verify file opens properly
         if (!infile.good()) {
             cout << "ERROR: Failed to open file \"" << filename << "\"" << endl;
             throw ios_base::failure("Invalid file name");
@@ -190,29 +203,25 @@ void fillPlaylistlist(Playlist* playlistlist, int size, string filename) {
     } else {
         input = &cin;
     }
+
+    //Calls fill function of each playlist
     cout << "Filling playlist list" << endl;
     for(int i = 0; i < size; i++) {
         cout << "Playlist #" << i + 1 << ":" << endl;
         (playlistlist + i)->Fill(input);
         
     }
+
     if(infile.is_open()) {
         infile.close();
     }
 }
 
-/**
- * Output a list of playlists to console output
- * @param playlistlist Dynamic list of playlists to output
- * @param size Size of array of playlists
- * @todo Test: make sure all associated playlist/song display functions work properly
- */
 void displayPlaylistlist(Playlist* playlistlist, int size) {
     CoutLine();
     cout << "Displaying Playlists" << endl;
     CoutLine();
-    //Calls Display function on each playlist
-    //Each playlist will call a song Display function for its songs
+    //Calls Display function of each playlist
     for(int i = 0; i < size; i++) {
         cout << "Playlist #" << i + 1 << ": " << endl;
         (playlistlist + i)->Display();
