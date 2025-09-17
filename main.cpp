@@ -49,7 +49,7 @@ void displayPlaylistlist(Playlist* playlistlist, int size);
  * @param length Length of line
  * @param lineChar Characters composing the line
  */
-void CoutLine(int length = 50, char lineChar = '=');
+void CoutLine(int length = 60, char lineChar = '=');
 
 /**
  * @todo Move descriptions to prototypes
@@ -61,7 +61,7 @@ void CoutLine(int length = 50, char lineChar = '=');
  */
 int main() {
     const int SIZE = 3;
-    const string FILENAME = "data.txt";
+    const string FILENAME = "data.txtt";
     Playlist* playlistlist = nullptr;
     playlistlist = new Playlist[SIZE];
     fillPlaylistlist(playlistlist, SIZE, FILENAME);
@@ -107,6 +107,8 @@ void Playlist::Fill(istream* input) {
         //save longest song so display table formats properly
         int songWidth = (songs + i)->name.size() + (songs + i)->artist.size() + TABLE_PADDING;
         tableSongWidth = (tableSongWidth < songWidth) ?  songWidth : tableSongWidth;
+
+        //get song duration w/ input validation
         while((songs + i)->duration <= 0) { //dont allow durations of 0; duration is 0 by default
             cout << " >> Enter duration of song " << i + 1 << " in seconds: " << endl;
             while(!(*input >> (songs + i)->duration)) { 
@@ -119,6 +121,10 @@ void Playlist::Fill(istream* input) {
             }
         }
         input->ignore(IGNORE_CHARS, '\n');
+
+        //save longest duration width so display table formats properly
+        int durationWidth = FormatDuration((songs + i)->duration).size();
+        tableDurationWidth = (tableDurationWidth < durationWidth) ? durationWidth : tableDurationWidth; 
     }
 } 
 
@@ -132,17 +138,17 @@ void CoutLine(int length, char lineChar) {
  * @todo add display function for individual songs, test
  */
 void Playlist::Display() {
-    CoutLine();
+    CoutLine(tableSongWidth + tableDurationWidth);
     cout << "Name: " << name << endl;
     cout << "Genre: " << genre << endl;
     cout << "Songs: " << size << endl;
-    CoutLine();
-    cout << setw(tableSongWidth) << "\tSong Name and Artist"
-         << setw(tableDurationWidth) << "Duration";
+    CoutLine(tableSongWidth + tableDurationWidth);
+    cout << setw(tableSongWidth) << left << "Song Name and Artist"
+         << setw(tableDurationWidth) << "Duration" << endl;
     CoutLine(tableSongWidth + tableDurationWidth, '-');
     for (int i = 0; i < size; i++) {
-        cout << setw(tableSongWidth) << "\t" << (songs + i)->name << " by " << (songs + i)->artist
-             << setw(tableDurationWidth) << FormatDuration((songs + i)->duration);
+        cout << setw(tableSongWidth) << (songs + i)->name + " by " + (songs + i)->artist
+             << setw(tableDurationWidth) << FormatDuration((songs + i)->duration) << endl;
     }
     CoutLine(tableDurationWidth+tableSongWidth);
 }
